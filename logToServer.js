@@ -1,28 +1,36 @@
 angular.module('logToServer', [])
-.service('$log', function () {
-    this.log = function (msg) {
-        JL('Angular').trace(msg);
-    }
-
-    this.debug = function (msg) {
-        JL('Angular').debug(msg);
-    }
-
-    this.info = function (msg) {
-        JL('Angular').info(msg);
-    }
-
-    this.warn = function (msg) {
-        JL('Angular').warn(msg);
-    }
-
-    this.error = function (msg) {
-        JL('Angular').error(msg);
-    }
-})
+// http://solutionoptimist.com/2013/10/07/enhance-angularjs-logging-using-decorators/
+.config(["$provide", function( $provide )
+{
+    // Use the `decorator` solution to substitute or attach behaviors to
+    // original service instance; @see angular-mocks for more examples....
+ 
+    $provide.decorator( '$log', [ "$delegate", function($delegate)
+    {
+        // Save the original $log.debug()
+        //var debugFn = $delegate.debug; 
+        $delegate.debug = function() {
+            JL().debug(arguments);
+        };
+        $delegate.log = function() {
+            JL().log(arguments);
+        };
+        $delegate.info = function () {
+            JL().info(arguments);
+        };
+        $delegate.warn = function () {
+            JL().warn(arguments);
+        };
+        $delegate.error = function () {
+            JL().error(arguments);
+        };
+ 
+        return $delegate;
+    }]);
+}])
 .factory('$exceptionHandler', function () {
     return function (exception, cause) {
-        JL('Angular').fatalException(cause, exception);
+        JL().fatalException(cause, exception);
         throw exception;
     };
 })
@@ -38,7 +46,7 @@ angular.module('logToServer', [])
                 var msAfterAjaxCall = new Date().getTime();
                 var timeTakenInMs = msAfterAjaxCall - response.config.msBeforeAjaxCall;
                 if (timeTakenInMs > response.config.warningAfter) {
-                    JL('Angular.Ajax').warn({ "timeTakenInMs": timeTakenInMs, config: response.config, data: response.data });
+                    JL().warn({ "timeTakenInMs": timeTakenInMs, config: response.config, data: response.data });
                 }
             }
 
@@ -50,7 +58,7 @@ angular.module('logToServer', [])
                 errorMessage = rejection.data.ExceptionMessage;
             }
 
-            JL('Angular.Ajax').fatalException({ errorMessage: errorMessage, status: rejection.status, config: rejection.config }, rejection.data);
+            JL().fatalException({ errorMessage: errorMessage, status: rejection.status, config: rejection.config }, rejection.data);
             return $q.reject(rejection);
         }
     };
