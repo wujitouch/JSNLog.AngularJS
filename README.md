@@ -1,7 +1,7 @@
 # Logging and JavaScript error handling for AngularJS
 
 ## About this fork
-The original code replaces the $log service be declaring a new one. Since the new $log service doesn't implement all the methods that the original one does (like the function debugEnabled(true|false)), it can break code that already uses the service. This fork doesn't replace the service but decorates it using the $provide service (more info here: http://solutionoptimist.com/2013/10/07/enhance-angularjs-logging-using-decorators/)
+The original code replaces the $log service by declaring a new one. Since the new $log service doesn't implement all the methods that the original one does (like the function debugEnabled(true|false)), it can break code that already uses the service. This fork doesn't replace the service but decorates it using the $provide service (more info here: http://solutionoptimist.com/2013/10/07/enhance-angularjs-logging-using-decorators/)
 
 ## About logToServer.js
 
